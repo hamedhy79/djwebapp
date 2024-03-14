@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home.apps.homeConfig',
     'account.apps.AccountConfig',
+    'rest_framework',
 ]
 
 X_FRAME_OPTIONS = "SAMEORIGIN"

@@ -42,3 +42,12 @@ class Vote(models.Model):
 
     def __str__(self):
         return f'{self.user} Liked {self.post.slug}'
+
+
+class PersonSer(models.Model):
+    name = models.CharField(max_length=30)
+    age = models.PositiveSmallIntegerField()
+    email = models.EmailField()
+
+    def __str__(self):
+        return self.name

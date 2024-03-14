@@ -1,12 +1,28 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .models import Post, Comment, Vote
+from .models import Post, Comment, Vote, PersonSer
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from .forms import PostCreateUpdateForm, CommentCreateForm, CommentReplyForm, PostSearchInput
 from django.utils.text import slugify
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from rest_framework.decorators import api_view
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializers import PersonSerialiser
+
+
+class Home(APIView):
+    def get(self, request):
+        # name = request.query_params['name']
+        persons = PersonSer.objects.all()
+        ser_data = PersonSerialiser(instance=persons, many=True)  # many for several arguments
+        return Response(data=ser_data.data)
+
+    # def post(self, request):
+    #     name = request.data['name']
+    #     return Response({'name': name})
 
 
 class HomeView(View):
@@ -30,7 +46,8 @@ class PostDetailView(View):
     def get(self, request, *args, **kwargs):
         comments = self.post_instance.post_comments.filter(is_reply=False)
         return render(request, 'home/detail.html',
-                      {'post': self.post_instance, 'comments': comments, 'form': self.form_class, 'reply_form': self.form_class_reply})
+                      {'post': self.post_instance, 'comments': comments, 'form': self.form_class,
+                       'reply_form': self.form_class_reply})
 
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
@@ -131,4 +148,3 @@ class PostLikeView(View):
             Vote.objects.create(post=post, user=request.user)
             messages.success(request, 'like ok')
         return redirect('home:post_detail', post.id, post.slug)
-
