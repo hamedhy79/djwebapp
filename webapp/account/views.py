@@ -8,8 +8,26 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 from .models import Relation
-
+from .serialisers import UserRegisterSerializers
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 # Create your views here.
+
+
+class UserRegisterSer(APIView):
+    def post(self, request):
+        ser_data = UserRegisterSerializers(data=request.POST)
+        if ser_data.is_valid():
+            ser_data.create(ser_data.validated_data)
+
+            # User.objects.create_user(
+            #     username=ser_data.validated_data['username'],
+            #     email=ser_data.validated_data['email'],
+            #     password=ser_data.validated_data['password']
+            # )
+            return Response(ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserRegisterView(View):

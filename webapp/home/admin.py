@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment, Vote, PersonSer
+from .models import Post, Comment, Vote, PersonSer, Question, Answer, Car
 
 
 # Register your models here.
@@ -21,3 +21,6 @@ class CommentAdmin(admin.ModelAdmin):
 
 admin.site.register(Vote)
 admin.site.register(PersonSer)
+admin.site.register(Question)
+admin.site.register(Answer)
+admin.site.register(Car)

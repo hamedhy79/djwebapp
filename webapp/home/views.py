@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .models import Post, Comment, Vote, PersonSer
+from .models import Post, Comment, Vote, PersonSer, Question, Answer, Car
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from .forms import PostCreateUpdateForm, CommentCreateForm, CommentReplyForm, PostSearchInput
@@ -10,10 +10,30 @@ from django.utils.decorators import method_decorator
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import PersonSerialiser
+from .serializers import PersonSerialiser, QuestionSer, AnswerSer
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework import status
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+
+
+class HomeList(ListView):
+    template_name = 'home/shop.html'
+    model = Car
+    ordering = 'year'
+    context_object_name = 'cars'
+    allow_empty = True
+
+
+class CarDetail(DetailView):
+    template_name = 'home/detail_car.html'
+    model = Car
+    context_object_name = 'car'
 
 
 class Home(APIView):
+    permission_classes = [IsAdminUser, ]
+
     def get(self, request):
         # name = request.query_params['name']
         persons = PersonSer.objects.all()
@@ -25,7 +45,40 @@ class Home(APIView):
     #     return Response({'name': name})
 
 
-class HomeView(View):
+class QuestionListView(APIView):
+    def get(self, request):
+        question = Question.objects.all()
+        ser_data = QuestionSer(instance=question, many=True)
+        return Response(ser_data.data, status=status.HTTP_200_OK)
+
+
+class QuestionCreateView(APIView):
+    def post(self, request):
+        ser_data = QuestionSer(data=request.data)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class QuestionUpdateView(APIView):
+    def put(self, request, pk):
+        question = Question.objects.get(pk=pk)
+        ser_data = QuestionSer(instance=question, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(ser_data.data, status=status.HTTP_200_OK)
+        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class QuestionDeleteView(APIView):
+    def delete(self, request, pk):
+        question = Question.objects.get(pk=pk)
+        question.delete()
+        return Response({'message': 'question deleted'}, status=status.HTTP_200_OK)
+
+
+class HomeView(ListView):
     form_class = PostSearchInput
 
     def get(self, request):

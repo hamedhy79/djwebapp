@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'home.apps.homeConfig',
     'account.apps.AccountConfig',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
@@ -142,3 +143,10 @@ EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = 'gbkdzzlvrfhkccsd'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'academyhaminet website'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
