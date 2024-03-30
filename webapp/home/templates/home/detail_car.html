@@ -5,6 +5,7 @@
 <p>{{ car.name }}</p>
 <p>{{ car.owner }}</p>
 <p>{{ car.year }}</p>
-
+<a class="btn btn-danger" href="{% url 'home:delete_car' car.id %}">Delete {{ car.name }}</a>
+<a class="btn btn-primary" href="{% url 'home:update_car' car.id %}">Update {{ car.name }}</a>
 </div>
 {% endblock %}

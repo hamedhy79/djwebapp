@@ -3,8 +3,8 @@
 <div>
 
 {% for car in cars %}
-<a href="{% url 'home:car_detail' car.id %}">{{ car.name }}</a>
+<a style="text-decoration: none;" class="btn btn-primary" href="{% url 'home:car_detail' car.id %}">{{ car.name }}</a>
 {% endfor %}
-
-</div>
+</div><br>
+    <a class="btn btn-info"  href="{% url 'home:car_create' %}">CREATE YOUR CAR</a>
 {% endblock %}

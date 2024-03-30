@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
+<h2>create car</h2>
+{% if request.user.is_authenticated %}
 <form method="post" novalidate class="col-md-3">
     {% csrf_token %}
     {{ form.as_p }}
-    <button class="btn btn-primary">Update</button>
+    <button class="btn btn-primary">Create</button>
 </form>
+{% endif %}
 {% endblock %}

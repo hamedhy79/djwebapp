@@ -1,9 +1,10 @@
+import django.views.generic
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from .models import Post, Comment, Vote, PersonSer, Question, Answer, Car
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from .forms import PostCreateUpdateForm, CommentCreateForm, CommentReplyForm, PostSearchInput
+from .forms import PostCreateUpdateForm, CommentCreateForm, CommentReplyForm, PostSearchInput, CreateCarForm
 from django.utils.text import slugify
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -15,6 +16,9 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import status
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic import FormView
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, UpdateView
 
 
 class HomeList(ListView):
@@ -29,6 +33,45 @@ class CarDetail(DetailView):
     template_name = 'home/detail_car.html'
     model = Car
     context_object_name = 'car'
+
+
+# class CreateCarView(FormView):
+#     template_name = 'home/create_car.html'
+#     form_class = CreateCarForm
+#     success_url = reverse_lazy('home:home')
+#
+#     def form_valid(self, form):
+#         self._create_car(form.cleaned_data)
+#         messages.success(self.request, 'created car', 'success')
+#         return super().form_valid(form)
+#
+#     def _create_car(self, data):
+#         Car.objects.create(name=data['name'], owner=data['owner'], year=data['year'])
+class CreateCarView(CreateView):
+    model = Car
+    fields = ['name', 'year']
+    template_name = 'home/create_car.html'
+    success_url = reverse_lazy('home:home')
+
+    def form_valid(self, form):
+        car = form.save(commit=False)
+        car.owner = self.request.user.username
+        car.save()
+        messages.success(self.request,'success', 'success')
+        return super().form_valid(form)
+
+
+class DeleteCarView(DeleteView):
+    model = Car
+    success_url = reverse_lazy('home:home')
+    template_name = 'home/delete_car.html'
+
+
+class UpdateCarView(UpdateView):
+    model = Car
+    fields = ['name']
+    success_url = reverse_lazy('home:home')
+    template_name = 'home/update.html'
 
 
 class Home(APIView):

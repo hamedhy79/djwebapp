@@ -5,8 +5,11 @@ app_name = 'home'
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('home/', views.Home.as_view(), name='home_api'),
-    path('shop/', views.HomeList.as_view(), name='home_class'),
+    path('shop/', views.HomeList.as_view(), name='car_shop'),
     path('<int:pk>/', views.CarDetail.as_view(), name='car_detail'),
+    path('create_car/', views.CreateCarView.as_view(), name='car_create'),
+    path('delete_car/<int:pk>/', views.DeleteCarView.as_view(), name='delete_car'),
+    path('update/<int:pk>/', views.UpdateCarView.as_view(), name='update_car'),
     path('questions/', views.QuestionListView.as_view()),
     path('questions/create/', views.QuestionCreateView.as_view()),
     path('questions/update/<int:pk>/', views.QuestionUpdateView.as_view()),

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Comment
+from .models import Post, Comment, Car
 
 
 class PostCreateUpdateForm(forms.ModelForm):
@@ -25,5 +25,8 @@ class PostSearchInput(forms.Form):
     search = forms.CharField()
 
 
-
+class CreateCarForm(forms.ModelForm):
+    class Meta:
+        model = Car
+        fields = '__all__'
 
